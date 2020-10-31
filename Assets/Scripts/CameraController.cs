@@ -35,4 +35,12 @@ public class CameraController : MonoBehaviour
 
         transform.position = pos;
     }
+
+    public void MoveTo(Vector3 position)
+    {
+        position.x = Mathf.Clamp(position.x, -panLimit.x, panLimit.x);
+        position.y = Mathf.Clamp(position.y, -panLimit.y, panLimit.y);
+        transform.position = position;
+        UnityEngine.Debug.Log(position);
+    }
 }
