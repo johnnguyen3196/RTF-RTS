@@ -31,6 +31,8 @@ public class RTSController : MonoBehaviour
 
     public List<List<GameObject>> ControlGroups;
 
+    public GameObject UIUnitPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -156,10 +158,7 @@ public class RTSController : MonoBehaviour
         {
             if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
             {
-                foreach (GameObject unit in selectedPlayerObjects)
-                {
-                    unit.GetComponent<PlayerUnit>().SetSelected(false);
-                }
+                SelectPlayerUnits(false);
             }
         }
         
@@ -175,10 +174,7 @@ public class RTSController : MonoBehaviour
         }
         if(selectedPlayerObjects.Count != 0)
         {
-            foreach(GameObject playerUnitObject in selectedPlayerObjects)
-            {
-                playerUnitObject.GetComponent<PlayerUnit>().SetSelected(true);
-            }
+            SelectPlayerUnits(true);
             return;
         }
 
@@ -201,6 +197,15 @@ public class RTSController : MonoBehaviour
         }
     }
 
+    void SelectPlayerUnits(bool select)
+    {
+        foreach (GameObject playerUnit in selectedPlayerObjects)
+        {
+            playerUnit.GetComponent<PlayerUnit>().SetSelected(select);
+        }
+        UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+    }
+
     void CreateControlGroup()
     {
         if (numberPressed > -1 && selectedPlayerObjects.Count != 0)
@@ -212,8 +217,16 @@ public class RTSController : MonoBehaviour
 
     void SelectControlGroup()
     {
+        SelectPlayerUnits(false);
         selectedPlayerObjects.Clear();
         selectedPlayerObjects.AddRange(ControlGroups[numberPressed]);
+        if(selectedPlayerObjects.Count > 0)
+        {
+            if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            {
+                SelectPlayerUnits(true);
+            }
+        }
     }
 
 }

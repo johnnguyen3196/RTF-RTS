@@ -5,7 +5,6 @@ using Pathfinding;
 
 public class PlayerUnit : MonoBehaviour
 {
-    //public Animator animator;
     public AIPath aiPath;
     public AIDestinationSetter aIDestinationSetter;
     private GameObject selectedGameObject;
