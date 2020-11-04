@@ -33,6 +33,8 @@ public class RTSController : MonoBehaviour
 
     public GameObject UIUnitPanel;
 
+    private Command command = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -87,6 +89,11 @@ public class RTSController : MonoBehaviour
         {
             SelectControlGroup();
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            command = new AttackMove();
+        }
     }
     
     //Move command for now
@@ -95,39 +102,13 @@ public class RTSController : MonoBehaviour
         Vector3 modifiedPos = mousePosition;
         modifiedPos.z = 0;
         GameObject obj = Instantiate(RightClickPrefab, modifiedPos, Quaternion.identity);
-        obj.GetComponent<RightClickObject>().attack = false;
-        MoveSelected(mousePosition);
-    }
-
-    void MoveSelected(Vector3 mousePosition)
-    {
-        //check if the objects the player selected is movable by player
-        if(selectedPlayerObjects.Count != 0)
+        
+        if(command == null)
         {
-            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
-            {
-                foreach (GameObject obj in positionObjects)
-                {
-                    Destroy(obj);
-                }
-                positionObjects.Clear();
-
-                float distance = .75f;
-                int count = selectedPlayerObjects.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    float angle = i * (360f / count);
-                    Vector3 dir = Quaternion.Euler(0, 0, angle) * new Vector3(1, 0, 0);
-                    Vector3 position = mousePosition + dir * distance;
-
-                    GameObject obj = new GameObject("PosObj" + i);
-                    obj.transform.position = position;
-                    positionObjects.Add(obj);
-
-                    selectedPlayerObjects[i].GetComponent<PlayerUnit>().Move(obj.transform);
-                }
-            }
+            command = new Move();
         }
+        command.execute(mousePosition, selectedPlayerObjects, positionObjects, obj);
+        command = null;
     }
 
     void LeftMouseDown()

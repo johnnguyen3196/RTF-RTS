@@ -10,9 +10,12 @@ public class PlayerUnitGun : MonoBehaviour
     private float fireTime = 0;
     public int damage;
 
-    public GameObject target;
+    private GameObject target;
 
-    //public GameObject enemyBulletPrefab;
+    private bool enableAttack = false;
+
+    public GameObject playerBulletPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,16 +25,39 @@ public class PlayerUnitGun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 gunTargetVector = new Vector3(1, 0, 0);
-        gunTargetVector.z = 0;
-        Vector3 offset = gunTargetVector.normalized * GunRadius;
-        transform.position = transform.parent.transform.position + offset;
-        transform.right = gunTargetVector.normalized;
-
-        if (fireTime < Time.time)
+        if (target != null)
         {
-            fireTime += fireRate;
-            //FindObjectOfType<SoundManager>().Play("EnemyGunShot");
+            Vector3 gunTargetVector = target.transform.position - transform.position;
+            gunTargetVector.z = 0;
+            Vector3 offset = gunTargetVector.normalized * GunRadius;
+            transform.position = transform.parent.transform.position + offset;
+            transform.right = gunTargetVector.normalized;
+
+            if (enableAttack && fireTime < Time.time)
+            {
+                //create bullet object
+                GameObject go = Instantiate(playerBulletPrefab, transform.position, Quaternion.identity);
+                PlayerBullet bullet = go.GetComponent<PlayerBullet>();
+                bullet.targetVector = gunTargetVector;
+                fireTime += fireRate;
+            }
         }
+        else
+        {
+            Vector3 gunTargetVector = new Vector3(-1, 0, 0);
+            Vector3 offset = gunTargetVector.normalized * GunRadius;
+            transform.position = transform.parent.transform.position + offset;
+            transform.right = gunTargetVector.normalized;
+        }
+    }
+
+    public void SetTarget(GameObject o)
+    {
+        target = o;
+    }
+
+    public void EnableAttack(bool attack)
+    {
+        enableAttack = attack;
     }
 }

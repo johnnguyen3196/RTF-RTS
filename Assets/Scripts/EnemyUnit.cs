@@ -11,21 +11,29 @@ public class EnemyUnit : MonoBehaviour
     //private GameObject selectedGameObject;
     public Animator animator;
 
+    public GameObject gun;
+
     private GameObject target = null;
 
     private bool dying = false;
+
+    private float switchTargetTimer;
     // Start is called before the first frame update
     void Start()
     {
         GetNewTarget();
+        transform.GetChild(0).gameObject.GetComponent<EnemyUnitGun>().SetTarget(target);
+        transform.GetChild(1).gameObject.GetComponent<EnemyCircleCollider>().SetTarget(target);
+        switchTargetTimer = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(target == null)
+        if(target == null || switchTargetTimer < Time.time)
         {
             GetNewTarget();
+            switchTargetTimer += 1f;
         }
         if (!dying)
         {
@@ -55,10 +63,25 @@ public class EnemyUnit : MonoBehaviour
             }
             target = potentialTargets[closestIndex];
             aIDestinationSetter.target = target.transform;
+            transform.GetChild(0).gameObject.GetComponent<EnemyUnitGun>().SetTarget(target);
+            transform.GetChild(1).gameObject.GetComponent<EnemyCircleCollider>().SetTarget(target);
         } else
         {
             //player has no more units, AI stops
             aIDestinationSetter.target = gameObject.transform;
+        }
+    }
+
+    public void EnableAttack(bool attack)
+    {
+        gun.GetComponent<EnemyUnitGun>().EnableAttack(attack);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "PlayerBullet")
+        {
+            //unit.TakeDamage(collision.gameObject.GetComponent<PlayerBullet>().damage);
         }
     }
 }
