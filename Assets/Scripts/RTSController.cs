@@ -35,6 +35,8 @@ public class RTSController : MonoBehaviour
 
     private Command command = null;
 
+    public GameObject ControlGroupPanelObject;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -93,6 +95,11 @@ public class RTSController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             command = new AttackMove();
+        }
+
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            command = new Move();
         }
     }
     
@@ -193,21 +200,31 @@ public class RTSController : MonoBehaviour
         {
             ControlGroups[numberPressed].Clear();
             ControlGroups[numberPressed].AddRange(selectedPlayerObjects);
+
+            ControlGroupPanelObject.GetComponent<UIControlGroupPanel>().CreateControlGroup(numberPressed);
         }
     }
 
     void SelectControlGroup()
     {
-        SelectPlayerUnits(false);
-        selectedPlayerObjects.Clear();
-        selectedPlayerObjects.AddRange(ControlGroups[numberPressed]);
-        if(selectedPlayerObjects.Count > 0)
+        if(ControlGroups[numberPressed].Count != 0)
         {
-            if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            SelectPlayerUnits(false);
+            selectedPlayerObjects.Clear();
+            selectedPlayerObjects.AddRange(ControlGroups[numberPressed]);
+            if (selectedPlayerObjects.Count > 0)
             {
-                SelectPlayerUnits(true);
+                if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                {
+                    SelectPlayerUnits(true);
+                }
             }
+            ControlGroupPanelObject.GetComponent<UIControlGroupPanel>().SelectGroup(numberPressed);
         }
     }
 
+    public void SetCommand(Command newCommand)
+    {
+        command = newCommand;
+    }
 }
