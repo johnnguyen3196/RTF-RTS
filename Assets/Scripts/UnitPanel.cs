@@ -8,11 +8,20 @@ public class UnitPanel : MonoBehaviour
     public GameObject PlayerUnit;
     public Vector2 topLeft;
 
-    private List<GameObject> UIElements;
+    public List<GameObject> UIElements;
 
     void Start()
     {
         UIElements = new List<GameObject>();
+    }
+
+    public void ClearUnitPanel()
+    {
+        foreach (GameObject element in UIElements)
+        {
+            Destroy(element);
+        }
+        UIElements.Clear();
     }
 
     public void SelectPlayerUnits(int number)
@@ -40,7 +49,6 @@ public class UnitPanel : MonoBehaviour
             for(int col = 0; col < numberOfCol; col++)
             {
                 GameObject go = Instantiate(PlayerUnit, gameObject.transform, false);
-                //RectTransform rt = go.GetComponent<RectTransform>();
                 //Starting from top left of panel, move the UI component based on column and row.
                 go.transform.localPosition = new Vector3(topLeft.x + (col * 100), topLeft.y - (row * 100));
                 go.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = (row * 11 + col).ToString();

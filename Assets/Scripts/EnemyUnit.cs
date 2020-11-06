@@ -18,6 +18,13 @@ public class EnemyUnit : MonoBehaviour
     private bool dying = false;
 
     private float switchTargetTimer;
+
+    public GameObject UIHealthBarPrefab;
+    public GameObject UIHealthBar;
+
+    public int health;
+
+    public Vector2 movement;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +32,13 @@ public class EnemyUnit : MonoBehaviour
         transform.GetChild(0).gameObject.GetComponent<EnemyUnitGun>().SetTarget(target);
         transform.GetChild(1).gameObject.GetComponent<EnemyCircleCollider>().SetTarget(target);
         switchTargetTimer = Time.time;
+        movement = new Vector2(0, 0);
+
+        UIHealthBar = Instantiate(UIHealthBarPrefab, transform.position, Quaternion.identity);
+        UIHealthBar.transform.SetParent(GameObject.Find("Canvas").transform);
+        HealthBar healthBar = UIHealthBar.GetComponent<HealthBar>();
+        healthBar.SetMaxHealth(health);
+        healthBar.target = gameObject;
     }
 
     // Update is called once per frame
@@ -37,7 +51,7 @@ public class EnemyUnit : MonoBehaviour
         }
         if (!dying)
         {
-            Vector2 movement = new Vector2(aiPath.desiredVelocity.x, aiPath.desiredVelocity.y);
+            movement = new Vector2(aiPath.desiredVelocity.x, aiPath.desiredVelocity.y);
             animator.SetFloat("Horizontal", movement.x);
             animator.SetFloat("Vertical", movement.y);
             animator.SetFloat("Speed", movement.sqrMagnitude);

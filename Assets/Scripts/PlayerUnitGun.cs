@@ -12,13 +12,15 @@ public class PlayerUnitGun : MonoBehaviour
 
     private GameObject target;
 
-    private bool enableAttack = false;
-
     public GameObject playerBulletPrefab;
+
+    private PlayerUnit parent;
 
     // Start is called before the first frame update
     void Start()
     {
+        parent = transform.parent.GetComponent<PlayerUnit>();
+
         fireTime = Time.time + fireRate;
     }
 
@@ -33,18 +35,18 @@ public class PlayerUnitGun : MonoBehaviour
             transform.position = transform.parent.transform.position + offset;
             transform.right = gunTargetVector.normalized;
 
-            if (enableAttack && fireTime < Time.time)
+            if (parent.inRangeOfTarget && parent.movement.magnitude == 0 && fireTime < Time.time)
             {
                 //create bullet object
                 GameObject go = Instantiate(playerBulletPrefab, transform.position, Quaternion.identity);
                 PlayerBullet bullet = go.GetComponent<PlayerBullet>();
                 bullet.targetVector = gunTargetVector;
-                fireTime += fireRate;
+                fireTime = Time.time + fireRate;
             }
         }
         else
         {
-            Vector3 gunTargetVector = new Vector3(-1, 0, 0);
+            Vector3 gunTargetVector = new Vector3(1, 0, 0);
             Vector3 offset = gunTargetVector.normalized * GunRadius;
             transform.position = transform.parent.transform.position + offset;
             transform.right = gunTargetVector.normalized;
@@ -54,10 +56,5 @@ public class PlayerUnitGun : MonoBehaviour
     public void SetTarget(GameObject o)
     {
         target = o;
-    }
-
-    public void EnableAttack(bool attack)
-    {
-        enableAttack = attack;
     }
 }

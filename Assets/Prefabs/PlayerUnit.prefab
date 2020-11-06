@@ -234,7 +234,14 @@ MonoBehaviour:
   aiPath: {fileID: 7021893956145904724}
   aIDestinationSetter: {fileID: 7021893956145904727}
   animator: {fileID: 7021893956145904723}
+  target: {fileID: 0}
   gun: {fileID: 7834589432859588071}
+  health: 50
+  movement: {x: 0, y: 0}
+  inRangeOfTarget: 0
+  UIHealthBarPrefab: {fileID: 3019110341082402892, guid: 1f9302fbcb9f7f54d9c1613d33037a9a,
+    type: 3}
+  UIHealthBar: {fileID: 0}
 --- !u!114 &7021893956145904727
 MonoBehaviour:
   m_ObjectHideFlags: 0

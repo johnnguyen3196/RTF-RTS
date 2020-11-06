@@ -2267,6 +2267,100 @@ RectTransform:
   m_AnchoredPosition: {x: -300, y: 0}
   m_SizeDelta: {x: 100, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1001 &755740800
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 333026268086457029, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4444916908938729801, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4444916908938729801, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Name
+      value: EnemyCircleRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325170579472453951, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321203209374788813, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969057623850988163, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8969057623850988163, guid: 59d7d6b37f20b2943a5b27e6500fea04,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 59d7d6b37f20b2943a5b27e6500fea04, type: 3}
 --- !u!1 &775376589
 GameObject:
   m_ObjectHideFlags: 0
@@ -5188,6 +5282,7 @@ MonoBehaviour:
   PlayerUnit: {fileID: 8867323166559137148, guid: 735eab6fe1088c34b943f5d28609df43,
     type: 3}
   topLeft: {x: -500, y: 75}
+  UIElements: []
 --- !u!114 &1427556204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28169,6 +28264,7 @@ MonoBehaviour:
     type: 3}
   UIUnitPanel: {fileID: 1427556201}
   ControlGroupPanelObject: {fileID: 437751979}
+  buttonPressed: 0
 --- !u!4 &2131876570
 Transform:
   m_ObjectHideFlags: 0

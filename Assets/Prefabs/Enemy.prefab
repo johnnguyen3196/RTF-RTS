@@ -381,6 +381,11 @@ MonoBehaviour:
   aIDestinationSetter: {fileID: 1786004053034814698}
   animator: {fileID: 6585977612571531647}
   gun: {fileID: 333026268086457029}
+  UIHealthBarPrefab: {fileID: 3019110341082402892, guid: 1f9302fbcb9f7f54d9c1613d33037a9a,
+    type: 3}
+  UIHealthBar: {fileID: 0}
+  health: 30
+  movement: {x: 0, y: 0}
 --- !u!50 &2101065304349127244
 Rigidbody2D:
   serializedVersion: 4

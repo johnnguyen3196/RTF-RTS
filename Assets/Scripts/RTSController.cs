@@ -37,6 +37,8 @@ public class RTSController : MonoBehaviour
 
     public GameObject ControlGroupPanelObject;
 
+    public bool buttonPressed = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -138,6 +140,13 @@ public class RTSController : MonoBehaviour
 
     void LeftMouseUp()
     {
+        if (buttonPressed)
+        {
+            buttonPressed = false;
+            return;
+        }
+        UIUnitPanel.GetComponent<UnitPanel>().ClearUnitPanel();
+
         selectingBox.gameObject.SetActive(false);
 
         Collider2D[] collider2DArray = Physics2D.OverlapAreaAll(startPosition, Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -191,7 +200,8 @@ public class RTSController : MonoBehaviour
         {
             playerUnit.GetComponent<PlayerUnit>().SetSelected(select);
         }
-        UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+        if(select)
+            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
     }
 
     void CreateControlGroup()

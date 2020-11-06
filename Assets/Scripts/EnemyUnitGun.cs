@@ -16,11 +16,14 @@ public class EnemyUnitGun : MonoBehaviour
 
     private GameObject target;
 
+    private EnemyUnit parent;
+
     // Start is called before the first frame update
     void Start()
     {
         enableAttack = false;
         attackTimer = Time.time;
+        parent = transform.parent.gameObject.GetComponent<EnemyUnit>();
     }
 
     // Update is called once per frame
@@ -34,13 +37,13 @@ public class EnemyUnitGun : MonoBehaviour
             transform.position = transform.parent.transform.position + offset;
             transform.right = gunTargetVector.normalized;
 
-            if (enableAttack && attackTimer < Time.time)
+            if (enableAttack && parent.movement.magnitude == 0 && attackTimer < Time.time)
             {
                 //create bullet object
                 GameObject go = Instantiate(EnemyBulletObject, transform.position, Quaternion.identity);
                 EnemyBullet bullet = go.GetComponent<EnemyBullet>();
                 bullet.targetVector = gunTargetVector;
-                attackTimer += attackSpeed;
+                attackTimer = Time.time + attackSpeed;
             }
         } else
         {

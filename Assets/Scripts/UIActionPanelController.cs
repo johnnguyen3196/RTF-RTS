@@ -8,11 +8,15 @@ public class UIActionPanelController : MonoBehaviour
 
     public void Move()
     {
-        RTSController.GetComponent<RTSController>().SetCommand(new Move());
+        RTSController rts = RTSController.GetComponent<RTSController>();
+        rts.SetCommand(new Move());
+        rts.buttonPressed = true;
     }
 
     public void AttackMove()
     {
-        RTSController.GetComponent<RTSController>().SetCommand(new AttackMove());
+        RTSController rts = RTSController.GetComponent<RTSController>();
+        rts.SetCommand(new AttackMove());
+        rts.buttonPressed = true;
     }
 }

@@ -19,7 +19,7 @@ public class AttackMove : Command
 
                 foreach(GameObject unit in gameObjects)
                 {
-                    unit.GetComponent<PlayerUnit>().GetNewTarget();
+                    unit.GetComponent<PlayerUnit>().AttackMove();
                 }
             }
 
