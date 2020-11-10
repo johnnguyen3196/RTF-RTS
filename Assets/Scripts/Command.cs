@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface Command
 {
-    void execute(Vector3 mousePosition, List<GameObject> gameObjects, List<GameObject> moveObjects, GameObject rightClickObject);
+    void execute(List<GameObject> gameObjects, List<GameObject> moveObjects, GameObject rightClickObject);
 }

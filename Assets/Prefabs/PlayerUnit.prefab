@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5608642158798449465}
   - component: {fileID: 2547569217319464648}
   - component: {fileID: 6344314715264358670}
-  m_Layer: 10
+  m_Layer: 2
   m_Name: CircleRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}

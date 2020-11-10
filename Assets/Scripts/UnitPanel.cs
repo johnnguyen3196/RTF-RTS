@@ -6,6 +6,8 @@ using TMPro;
 public class UnitPanel : MonoBehaviour
 {
     public GameObject PlayerUnit;
+    public GameObject PlayerBuilding;
+
     public Vector2 topLeft;
 
     public List<GameObject> UIElements;
@@ -26,11 +28,7 @@ public class UnitPanel : MonoBehaviour
 
     public void SelectPlayerUnits(int number)
     {
-        foreach(GameObject element in UIElements)
-        {
-            Destroy(element);
-        }
-        UIElements.Clear();
+        ClearUnitPanel();
 
         double rows = Math.Ceiling((double)number / 10d);
         int remainder = number % 10;
@@ -55,5 +53,14 @@ public class UnitPanel : MonoBehaviour
                 UIElements.Add(go);
             }
         }
+    }
+
+    public void SelectPlayerBuilding()
+    {
+        ClearUnitPanel();
+
+        GameObject go = Instantiate(PlayerBuilding, gameObject.transform, false);
+        go.transform.localPosition = new Vector3(topLeft.x + 20, topLeft.y);
+        UIElements.Add(go);
     }
 }

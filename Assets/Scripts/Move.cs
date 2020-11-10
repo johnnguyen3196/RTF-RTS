@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Move : Command
 {
-    public void execute(Vector3 mousePosition, List<GameObject> gameObjects, List<GameObject> moveObjects, GameObject rightClickObject)
+    public Vector3 mousePosition;
+    public void execute(List<GameObject> gameObjects, List<GameObject> moveObjects, GameObject rightClickObject)
     {
         //check if the objects the player selected is movable by player
         if (gameObjects.Count != 0)
@@ -34,5 +35,10 @@ public class Move : Command
             }
         }
         rightClickObject.GetComponent<RightClickObject>().attack = false;
+    }
+
+    public void SetMousePosition(Vector3 newMousePosition)
+    {
+        mousePosition = newMousePosition;
     }
 }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackMove : Command
+public class Attack : Command
 {
-
+    public GameObject target;
     public void execute(List<GameObject> gameObjects, List<GameObject> moveObjects, GameObject rightClickObject)
     {
         if (gameObjects.Count != 0)
@@ -17,13 +17,18 @@ public class AttackMove : Command
                 }
                 moveObjects.Clear();
 
-                foreach(GameObject unit in gameObjects)
+                foreach (GameObject unit in gameObjects)
                 {
-                    unit.GetComponent<PlayerUnit>().AttackMove();
+                    unit.GetComponent<PlayerUnit>().Attack(target);
                 }
             }
 
         }
         rightClickObject.GetComponent<RightClickObject>().attack = true;
+    }
+
+    public void SetTarget(GameObject newTarget)
+    {
+        target = newTarget;
     }
 }

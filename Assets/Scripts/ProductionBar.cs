@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBar : MonoBehaviour
+public class ProductionBar : MonoBehaviour
 {
     public GameObject target;
     public Slider slider;
@@ -24,14 +24,14 @@ public class HealthBar : MonoBehaviour
         gameObject.transform.position = screenPos;
     }
 
-    public void SetMaxHealth(int health)
+    public void SetMaxTime(float time)
     {
-        slider.maxValue = health;
-        slider.value = health;
+        slider.maxValue = time;
+        slider.value = time;
     }
 
-    public void SetHealth(int health)
+    public void SetTimer(float time)
     {
-        slider.value = health;
+        slider.value = time;
     }
 }

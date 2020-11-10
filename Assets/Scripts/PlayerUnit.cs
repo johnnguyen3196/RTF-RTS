@@ -40,6 +40,7 @@ public class PlayerUnit : MonoBehaviour
         HealthBar healthBar = UIHealthBar.GetComponent<HealthBar>();
         healthBar.SetMaxHealth(health);
         healthBar.target = gameObject;
+        healthBar.offset = -40f;
     }
 
     // Update is called once per frame
@@ -100,6 +101,19 @@ public class PlayerUnit : MonoBehaviour
         aIDestinationSetter.target = target.transform;
 
         if (closestDistance <= 7f)
+        {
+            inRangeOfTarget = true;
+        }
+        SetChildrenTarget();
+    }
+
+    public void Attack(GameObject attackTarget)
+    {
+        target = attackTarget;
+        aiPath.endReachedDistance = 5f;
+        aIDestinationSetter.target = target.transform;
+        
+        if(Vector3.Distance(transform.position, attackTarget.transform.position) <= 7f)
         {
             inRangeOfTarget = true;
         }

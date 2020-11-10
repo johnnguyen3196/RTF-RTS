@@ -39,6 +39,10 @@ public class RTSController : MonoBehaviour
 
     public bool buttonPressed = false;
 
+    private GameObject rightClickTarget = null;
+
+    private UIResource UIResource;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +57,8 @@ public class RTSController : MonoBehaviour
         {
             ControlGroups.Add(new List<GameObject>());
         }
+
+        UIResource = GameObject.Find("Resource").GetComponent<UIResource>();
     }
 
     // Update is called once per frame
@@ -81,7 +87,24 @@ public class RTSController : MonoBehaviour
         //Right Click
         if (Input.GetMouseButtonDown(1))
         {
-            RightClickCommand(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+            if(hit.collider != null)
+            {
+                if (hit.collider.gameObject.tag == "Enemy")
+                {
+                    command = new Attack();
+                    (command as Attack).SetTarget(hit.collider.gameObject);
+                }
+            }
+            
+            if(selectedPlayerObjects.Count != 0)
+            {
+                if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                {
+                    RightClickCommand(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                }
+            }
         }
 
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
@@ -94,14 +117,34 @@ public class RTSController : MonoBehaviour
             SelectControlGroup();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && selectedPlayerObjects.Count > 0)
         {
-            command = new AttackMove();
+            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                command = new AttackMove();
         }
 
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.M) && selectedPlayerObjects.Count > 0)
         {
-            command = new Move();
+            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                command = new Move();
+        }
+
+        if(Input.GetKeyDown(KeyCode.P) && selectedPlayerObjects.Count > 0)
+        {
+            if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
+            {
+                selectedPlayerObjects[0].GetComponent<PlayerBarracks>().Produce();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && selectedPlayerObjects.Count > 0)
+        {
+            if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
+            {
+                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePosition.z = 0;
+                selectedPlayerObjects[0].GetComponent<PlayerBarracks>().rally.position = mousePosition;
+            }
         }
     }
     
@@ -115,8 +158,9 @@ public class RTSController : MonoBehaviour
         if(command == null)
         {
             command = new Move();
+            (command as Move).SetMousePosition(mousePosition);
         }
-        command.execute(mousePosition, selectedPlayerObjects, positionObjects, obj);
+        command.execute(selectedPlayerObjects, positionObjects, obj);
         command = null;
     }
 
@@ -157,6 +201,10 @@ public class RTSController : MonoBehaviour
             {
                 SelectPlayerUnits(false);
             }
+            if(selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
+            {
+                SelectPlayerBuilding(false);
+            }
         }
         
         selectedPlayerObjects.Clear();
@@ -169,6 +217,7 @@ public class RTSController : MonoBehaviour
                 selectedPlayerObjects.Add(collider2D.gameObject);
             }
         }
+        //Show that the unit is selected
         if(selectedPlayerObjects.Count != 0)
         {
             SelectPlayerUnits(true);
@@ -176,7 +225,19 @@ public class RTSController : MonoBehaviour
         }
 
         //Check if selected gameObjects is a PlayerBuilding
-
+        foreach(Collider2D collider2D in collider2DArray)
+        {
+            if (collider2D.tag == "PlayerBuilding")
+            {
+                selectedPlayerObjects.Clear();
+                selectedPlayerObjects.Add(collider2D.gameObject);
+            }
+        }
+        //Show building is selected
+        if(selectedPlayerObjects.Count != 0)
+        {
+            SelectPlayerBuilding(true);
+        }
         //Check if selected gameObjects is a EnemyUnit
 
         //Check if selected gameObject is an EnemyBuilding
@@ -202,6 +263,13 @@ public class RTSController : MonoBehaviour
         }
         if(select)
             UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+    }
+
+    void SelectPlayerBuilding(bool select)
+    {
+        selectedPlayerObjects[0].GetComponent<PlayerBarracks>().SetSelected(select);
+        if(select)
+            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerBuilding();
     }
 
     void CreateControlGroup()

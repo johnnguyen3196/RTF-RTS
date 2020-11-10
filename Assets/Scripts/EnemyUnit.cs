@@ -39,6 +39,7 @@ public class EnemyUnit : MonoBehaviour
         HealthBar healthBar = UIHealthBar.GetComponent<HealthBar>();
         healthBar.SetMaxHealth(health);
         healthBar.target = gameObject;
+        healthBar.offset = -40f;
     }
 
     // Update is called once per frame
