@@ -21,6 +21,7 @@ public class EnemyUnit : MonoBehaviour
 
     public GameObject UIHealthBarPrefab;
     public GameObject UIHealthBar;
+    public HealthBar healthBar;
 
     public int health;
 
@@ -36,7 +37,7 @@ public class EnemyUnit : MonoBehaviour
 
         UIHealthBar = Instantiate(UIHealthBarPrefab, transform.position, Quaternion.identity);
         UIHealthBar.transform.SetParent(GameObject.Find("Canvas").transform);
-        HealthBar healthBar = UIHealthBar.GetComponent<HealthBar>();
+        healthBar = UIHealthBar.GetComponent<HealthBar>();
         healthBar.SetMaxHealth(health);
         healthBar.target = gameObject;
         healthBar.offset = -40f;
@@ -63,6 +64,7 @@ public class EnemyUnit : MonoBehaviour
     {
         List<GameObject> potentialTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("PlayerUnit"));
         //Add player builidng to list here;
+        potentialTargets.Add(GameObject.Find("PlayerBarracks"));
         if(potentialTargets.Count > 0)
         {
             float closestDistance = 1000f;
@@ -92,11 +94,16 @@ public class EnemyUnit : MonoBehaviour
         gun.GetComponent<EnemyUnitGun>().EnableAttack(attack);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void TakeDamage(int damage)
     {
-        if (collision.gameObject.tag == "PlayerBullet")
+        health -= damage;
+        healthBar.SetHealth(health);
+        if (health <= 0)
         {
-            //unit.TakeDamage(collision.gameObject.GetComponent<PlayerBullet>().damage);
+            dying = true;
+            Destroy(UIHealthBar);
+            //temp
+            Destroy(gameObject);
         }
     }
 }

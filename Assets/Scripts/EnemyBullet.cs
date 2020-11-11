@@ -26,7 +26,15 @@ public class EnemyBullet : MonoBehaviour
         if (collision.gameObject.tag == "PlayerUnit")
         {
             PlayerUnit player = collision.gameObject.GetComponent<PlayerUnit>();
-            //player.TakeDamage(damage);
+            player.TakeDamage(damage);
+
+            Destroy(gameObject);
+        }
+
+        if (collision.gameObject.tag == "PlayerBuilding")
+        {
+            PlayerBarracks player = collision.gameObject.transform.parent.gameObject.GetComponent<PlayerBarracks>();
+            player.TakeDamage(damage);
 
             Destroy(gameObject);
         }

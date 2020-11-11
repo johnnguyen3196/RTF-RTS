@@ -27,6 +27,7 @@ public class PlayerUnit : MonoBehaviour
 
     public GameObject UIHealthBarPrefab;
     public GameObject UIHealthBar;
+    public HealthBar healthBar;
 
     // Start is called before the first frame update
     void Start()
@@ -37,7 +38,7 @@ public class PlayerUnit : MonoBehaviour
 
         UIHealthBar = Instantiate(UIHealthBarPrefab, transform.position, Quaternion.identity);
         UIHealthBar.transform.SetParent(GameObject.Find("Canvas").transform);
-        HealthBar healthBar = UIHealthBar.GetComponent<HealthBar>();
+        healthBar = UIHealthBar.GetComponent<HealthBar>();
         healthBar.SetMaxHealth(health);
         healthBar.target = gameObject;
         healthBar.offset = -40f;
@@ -66,10 +67,17 @@ public class PlayerUnit : MonoBehaviour
         aIDestinationSetter.target = movementLocation;
     }
 
+    public void Stop()
+    {
+        aiPath.endReachedDistance = 0.2f;
+        aIDestinationSetter.target = transform;
+    }
+
     public GameObject GetNewTarget()
     {
         List<GameObject> potentialTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("Enemy"));
         //Add enemy building to list here;
+        potentialTargets.Add(GameObject.Find("EnemyBarracks"));
         if (potentialTargets.Count > 0)
         {
             closestDistance = 1000f;
@@ -145,4 +153,17 @@ public class PlayerUnit : MonoBehaviour
         SetChildrenTarget();
     }
 
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        healthBar.SetHealth(health);
+        if(health <= 0)
+        {
+            dying = true;
+            Destroy(UIHealthBar);
+            GameObject.Find("RTSController").GetComponent<RTSController>().NotifyDeath(gameObject.name);
+            //temp
+            Destroy(gameObject);
+        }
+    }
 }

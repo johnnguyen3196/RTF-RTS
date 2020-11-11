@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using System;
 
 public class RTSController : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class RTSController : MonoBehaviour
     public List<List<GameObject>> ControlGroups;
 
     public GameObject UIUnitPanel;
+
+    public GameObject UIActionPanel;
 
     private Command command = null;
 
@@ -91,7 +94,7 @@ public class RTSController : MonoBehaviour
 
             if(hit.collider != null)
             {
-                if (hit.collider.gameObject.tag == "Enemy")
+                if (hit.collider.gameObject.tag == "Enemy" || hit.collider.gameObject.tag == "EnemyBuilding")
                 {
                     command = new Attack();
                     (command as Attack).SetTarget(hit.collider.gameObject);
@@ -100,7 +103,7 @@ public class RTSController : MonoBehaviour
             
             if(selectedPlayerObjects.Count != 0)
             {
-                if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null || selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
                 {
                     RightClickCommand(Camera.main.ScreenToWorldPoint(Input.mousePosition));
                 }
@@ -117,19 +120,33 @@ public class RTSController : MonoBehaviour
             SelectControlGroup();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && selectedPlayerObjects.Count > 0)
+        //AttackMove
+        if (Input.GetKeyDown(KeyCode.A) && selectedPlayerObjects.Count > 0)
         {
             if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
                 command = new AttackMove();
         }
 
+        //Move
         if (Input.GetKeyDown(KeyCode.M) && selectedPlayerObjects.Count > 0)
         {
             if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
                 command = new Move();
         }
 
-        if(Input.GetKeyDown(KeyCode.P) && selectedPlayerObjects.Count > 0)
+
+        //Stop
+        if (Input.GetKeyDown(KeyCode.S) && selectedPlayerObjects.Count > 0)
+        {
+            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            {
+                command = new Stop();
+                ExecuteCommand(null);
+            }   
+        }
+
+        //Make PlayerUnit
+        if (Input.GetKeyDown(KeyCode.P) && selectedPlayerObjects.Count > 0)
         {
             if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
             {
@@ -137,13 +154,12 @@ public class RTSController : MonoBehaviour
             }
         }
 
+        //Set Rally point
         if (Input.GetKeyDown(KeyCode.R) && selectedPlayerObjects.Count > 0)
         {
             if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
             {
-                Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                mousePosition.z = 0;
-                selectedPlayerObjects[0].GetComponent<PlayerBarracks>().rally.position = mousePosition;
+                SetRallyCommand();
             }
         }
     }
@@ -155,13 +171,12 @@ public class RTSController : MonoBehaviour
         modifiedPos.z = 0;
         GameObject obj = Instantiate(RightClickPrefab, modifiedPos, Quaternion.identity);
         
-        if(command == null)
+        if(command == null || command is Move)
         {
             command = new Move();
             (command as Move).SetMousePosition(mousePosition);
         }
-        command.execute(selectedPlayerObjects, positionObjects, obj);
-        command = null;
+        ExecuteCommand(obj);
     }
 
     void LeftMouseDown()
@@ -208,6 +223,7 @@ public class RTSController : MonoBehaviour
         }
         
         selectedPlayerObjects.Clear();
+        UIActionPanel.GetComponent<UIActionPanelController>().DisableActionPanel();
 
         //Check if the selected gameObjects is a PlayerUnit
         foreach (Collider2D collider2D in collider2DArray)
@@ -221,13 +237,14 @@ public class RTSController : MonoBehaviour
         if(selectedPlayerObjects.Count != 0)
         {
             SelectPlayerUnits(true);
+            UIActionPanel.GetComponent<UIActionPanelController>().EnablePlayerUnitPanel();
             return;
         }
 
         //Check if selected gameObjects is a PlayerBuilding
         foreach(Collider2D collider2D in collider2DArray)
         {
-            if (collider2D.tag == "PlayerBuilding")
+            if (collider2D.gameObject.tag == "PlayerBuilding")
             {
                 selectedPlayerObjects.Clear();
                 selectedPlayerObjects.Add(collider2D.gameObject);
@@ -237,6 +254,7 @@ public class RTSController : MonoBehaviour
         if(selectedPlayerObjects.Count != 0)
         {
             SelectPlayerBuilding(true);
+            UIActionPanel.GetComponent<UIActionPanelController>().EnablePlayerBarracksPanel();
         }
         //Check if selected gameObjects is a EnemyUnit
 
@@ -304,5 +322,27 @@ public class RTSController : MonoBehaviour
     public void SetCommand(Command newCommand)
     {
         command = newCommand;
+    }
+
+    public void ExecuteCommand(GameObject rightClickObject)
+    {
+        command.execute(selectedPlayerObjects, positionObjects, rightClickObject);
+        command = null;
+    }
+
+    public void SetRallyCommand()
+    {
+        command = new Rally();
+        (command as Rally).rally = selectedPlayerObjects[0].GetComponent<PlayerBarracks>().rally;
+    }
+
+    public void NotifyDeath(string name)
+    {
+        int index = selectedPlayerObjects.FindIndex(obj => obj.name == name);
+        if(index != -1)
+        {
+            selectedPlayerObjects.RemoveAt(index);
+            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+        }
     }
 }

@@ -1,34 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class PlayerBarracks : MonoBehaviour
+public class EnemyBarracks : MonoBehaviour
 {
-    private UIResource UIResource;
-
-    public GameObject selectedCircle;
-
-    public Transform rally;
-
     private int unitProduction = 0;
 
-    public GameObject playerUnitPrefab;
+    public GameObject enemyUnitPrefab;
 
     public GameObject UIHealthBarPrefab;
+    private GameObject UIHealthBar;
     private HealthBar healthBar;
     public int health;
 
     public GameObject UIProductionBarPrefab;
-    private GameObject UIHealthBar;
     private ProductionBar productionBar;
 
     private float productionTimer = 0;
     private bool producing = false;
+
+    private float timer;
     // Start is called before the first frame update
     void Start()
     {
-        UIResource = GameObject.Find("Resource").GetComponent<UIResource>();
-
         UIHealthBar = Instantiate(UIHealthBarPrefab, transform.position, Quaternion.identity);
         UIHealthBar.transform.SetParent(GameObject.Find("Canvas").transform);
         healthBar = UIHealthBar.GetComponent<HealthBar>();
@@ -45,6 +40,8 @@ public class PlayerBarracks : MonoBehaviour
         productionBar.SetTimer(0);
         productionBar.target = gameObject;
         productionBar.offset = -115f;
+
+        timer = Time.time + Random.Range(2, 6);
     }
 
     // Update is called once per frame
@@ -53,30 +50,33 @@ public class PlayerBarracks : MonoBehaviour
         if (producing)
         {
             productionTimer += Time.deltaTime;
-            if(productionTimer >= 5)
+            if (productionTimer >= 5)
             {
                 spawnOneUnit();
                 unitProduction--;
-                if(unitProduction == 0)
+                if (unitProduction == 0)
                 {
                     producing = false;
                 }
                 productionTimer = 0;
             }
-        } else
+        }
+        else
         {
-            if(unitProduction > 0)
+            if (unitProduction > 0)
             {
                 producing = true;
                 productionTimer = 0;
             }
         }
         productionBar.SetTimer(productionTimer);
-    }
 
-    public void SetSelected(bool select)
-    {
-        selectedCircle.SetActive(select);
+        //AI produces a unit every 30 - 45 seconds
+        if(timer < Time.time)
+        {
+            Produce();
+            timer += Random.Range(30, 46);
+        }
     }
 
     private void spawnOneUnit()
@@ -84,19 +84,12 @@ public class PlayerBarracks : MonoBehaviour
         Vector3 spawnPosition = transform.position;
         spawnPosition.y -= 4;
         spawnPosition.z = -.1f;
-        GameObject go = Instantiate(playerUnitPrefab, spawnPosition, Quaternion.identity);
-
-        PlayerUnit unit = go.GetComponent<PlayerUnit>();
-        unit.Move(rally);
+        GameObject go = Instantiate(enemyUnitPrefab, spawnPosition, Quaternion.identity);
     }
 
     public void Produce()
     {
-        if(UIResource.money >= 50)
-        {
-            unitProduction++;
-            UIResource.money -= 50;
-        }
+        unitProduction++; 
     }
 
     public void TakeDamage(int damage)

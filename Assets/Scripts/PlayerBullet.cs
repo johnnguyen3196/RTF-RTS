@@ -28,7 +28,14 @@ public class PlayerBullet : MonoBehaviour
         {
             EnemyUnit enemy = collision.gameObject.GetComponent<EnemyUnit>();
             //bool direction = transform.position.x < collision.transform.position.x ? true : false;
-            //enemy.TakeDamage(damage, direction);
+            enemy.TakeDamage(damage);
+            Destroy(gameObject);
+        }
+
+        if(collision.gameObject.tag == "EnemyBuilding")
+        {
+            EnemyBarracks enemy = collision.gameObject.GetComponent<EnemyBarracks>();
+            enemy.TakeDamage(damage);
             Destroy(gameObject);
         }
     }
