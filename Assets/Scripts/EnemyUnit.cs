@@ -65,7 +65,7 @@ public class EnemyUnit : MonoBehaviour
         List<GameObject> potentialTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("PlayerUnit"));
         //Add player builidng to list here;
         potentialTargets.Add(GameObject.Find("PlayerBarracks"));
-        if(potentialTargets.Count > 0)
+        if(potentialTargets.Count > 0 && potentialTargets[0] != null)
         {
             float closestDistance = 1000f;
             int closestIndex = 0;
@@ -82,6 +82,8 @@ public class EnemyUnit : MonoBehaviour
             aIDestinationSetter.target = target.transform;
             transform.GetChild(0).gameObject.GetComponent<EnemyUnitGun>().SetTarget(target);
             transform.GetChild(1).gameObject.GetComponent<EnemyCircleCollider>().SetTarget(target);
+            if (closestDistance < 5)
+                EnableAttack(true);
         } else
         {
             //player has no more units, AI stops
@@ -98,8 +100,10 @@ public class EnemyUnit : MonoBehaviour
     {
         health -= damage;
         healthBar.SetHealth(health);
+        animator.SetTrigger("Damage");
         if (health <= 0)
         {
+            FindObjectOfType<SoundManager>().Play("EnemyDeath");
             dying = true;
             Destroy(UIHealthBar);
             //temp

@@ -21,27 +21,38 @@ public class UnitPanel : MonoBehaviour
     {
         foreach (GameObject element in UIElements)
         {
+            if(element.GetComponent<UIUnit>() != null)
+                element.GetComponent<UIUnit>().Deselect();
+
             Destroy(element);
         }
         UIElements.Clear();
     }
 
-    public void SelectPlayerUnits(int number)
+    public void SelectPlayerUnits(List<GameObject> playerUnits)
     {
         ClearUnitPanel();
 
+        int number = playerUnits.Count;
         double rows = Math.Ceiling((double)number / 10d);
         int remainder = number % 10;
+        int unitNumber = 0;
         for(int row = 0; row < (int)rows; row++)
         {
-            int numberOfCol;
+            int numberOfCol = 0;
             if(row == rows - 1)
             {
-                numberOfCol = remainder;
+                if(number == 10)
+                {
+                    numberOfCol = 10;
+                } else
+                {
+                    numberOfCol = remainder;
+                }
             }
             else
             {
-                numberOfCol = 11;
+                numberOfCol = 10;
             }
             
             for(int col = 0; col < numberOfCol; col++)
@@ -49,8 +60,13 @@ public class UnitPanel : MonoBehaviour
                 GameObject go = Instantiate(PlayerUnit, gameObject.transform, false);
                 //Starting from top left of panel, move the UI component based on column and row.
                 go.transform.localPosition = new Vector3(topLeft.x + (col * 100), topLeft.y - (row * 100));
-                go.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = (row * 11 + col).ToString();
+                go.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>().text = unitNumber.ToString();
                 UIElements.Add(go);
+                UIUnit unit = go.GetComponent<UIUnit>();
+                unit.unitObject = playerUnits[unitNumber];
+                unit.SetMaxHealth(50);
+                unit.SetHealth(playerUnits[unitNumber].GetComponent<PlayerUnit>().health);
+                unitNumber++;
             }
         }
     }

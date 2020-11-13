@@ -44,6 +44,8 @@ public class EnemyUnitGun : MonoBehaviour
                 EnemyBullet bullet = go.GetComponent<EnemyBullet>();
                 bullet.targetVector = gunTargetVector;
                 attackTimer = Time.time + attackSpeed;
+
+                FindObjectOfType<SoundManager>().Play("EnemyGun");
             }
         } else
         {

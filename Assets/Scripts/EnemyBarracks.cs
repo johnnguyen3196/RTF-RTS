@@ -15,12 +15,15 @@ public class EnemyBarracks : MonoBehaviour
     public int health;
 
     public GameObject UIProductionBarPrefab;
+    private GameObject UIProductionBar;
     private ProductionBar productionBar;
 
     private float productionTimer = 0;
     private bool producing = false;
 
     private float timer;
+
+    public GameObject ExplosionObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +36,7 @@ public class EnemyBarracks : MonoBehaviour
         RectTransform rt = UIHealthBar.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(350, 15);
 
-        GameObject UIProductionBar = Instantiate(UIProductionBarPrefab, transform.position, Quaternion.identity);
+        UIProductionBar = Instantiate(UIProductionBarPrefab, transform.position, Quaternion.identity);
         UIProductionBar.transform.SetParent(GameObject.Find("Canvas").transform);
         productionBar = UIProductionBar.GetComponent<ProductionBar>();
         productionBar.SetMaxTime(5);
@@ -71,11 +74,11 @@ public class EnemyBarracks : MonoBehaviour
         }
         productionBar.SetTimer(productionTimer);
 
-        //AI produces a unit every 30 - 45 seconds
+        //AI produces a unit every 20 - 35 seconds
         if(timer < Time.time)
         {
             Produce();
-            timer += Random.Range(30, 46);
+            timer += Random.Range(20, 36);
         }
     }
 
@@ -98,7 +101,12 @@ public class EnemyBarracks : MonoBehaviour
         healthBar.SetHealth(health);
         if (health <= 0)
         {
+            GameObject.Find("RTSController").GetComponent<RTSController>().Win();
+
+            GameObject go = Instantiate(ExplosionObject, transform.position, Quaternion.identity);
+            Destroy(go, go.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             Destroy(UIHealthBar);
+            Destroy(UIProductionBar);
             //temp
             Destroy(gameObject);
         }

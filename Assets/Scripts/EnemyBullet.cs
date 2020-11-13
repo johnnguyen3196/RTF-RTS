@@ -8,6 +8,7 @@ public class EnemyBullet : MonoBehaviour
     public float speed;
     public int damage;
     private Rigidbody2D rb;
+    private bool hit = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,21 +23,25 @@ public class EnemyBullet : MonoBehaviour
         //{
         //    Destroy(gameObject);
         //}
-
-        if (collision.gameObject.tag == "PlayerUnit")
+        if (!hit)
         {
-            PlayerUnit player = collision.gameObject.GetComponent<PlayerUnit>();
-            player.TakeDamage(damage);
+            if (collision.gameObject.tag == "PlayerUnit")
+            {
+                hit = true;
+                PlayerUnit player = collision.gameObject.GetComponent<PlayerUnit>();
+                player.TakeDamage(damage);
 
-            Destroy(gameObject);
-        }
+                Destroy(gameObject);
+            }
 
-        if (collision.gameObject.tag == "PlayerBuilding")
-        {
-            PlayerBarracks player = collision.gameObject.transform.parent.gameObject.GetComponent<PlayerBarracks>();
-            player.TakeDamage(damage);
+            if (collision.gameObject.tag == "PlayerBuilding")
+            {
+                hit = true;
+                PlayerBarracks player = collision.gameObject.GetComponent<PlayerBarracks>();
+                player.TakeDamage(damage);
 
-            Destroy(gameObject);
+                Destroy(gameObject);
+            }
         }
     }
 }

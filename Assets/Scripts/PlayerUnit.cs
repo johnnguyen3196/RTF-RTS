@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 public class PlayerUnit : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerUnit : MonoBehaviour
 
     public Vector2 movement;
 
+    public List<GameObject> enemiesInRange;
     public bool inRangeOfTarget = false;
 
     private float closestDistance = 1000f;
@@ -29,9 +31,13 @@ public class PlayerUnit : MonoBehaviour
     public GameObject UIHealthBar;
     public HealthBar healthBar;
 
+    public GameObject UIUnit;
+
     // Start is called before the first frame update
     void Start()
     {
+        enemiesInRange = new List<GameObject>();
+
         selectedGameObject = transform.Find("Selected").gameObject;
         SetSelected(false);
         movement = new Vector2(0, 0);
@@ -47,6 +53,12 @@ public class PlayerUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(target == null && enemiesInRange.Count > 0)
+        {
+            target = enemiesInRange[Random.Range(0, enemiesInRange.Count)];
+            inRangeOfTarget = true;
+            SetChildrenTarget();
+        }
         if (!dying)
         {
             movement = new Vector2(aiPath.desiredVelocity.x, aiPath.desiredVelocity.y);
@@ -157,8 +169,14 @@ public class PlayerUnit : MonoBehaviour
     {
         health -= damage;
         healthBar.SetHealth(health);
+        animator.SetTrigger("Damage");
+        if(UIUnit != null)
+        {
+            UIUnit.GetComponent<UIUnit>().SetHealth(health);
+        }
         if(health <= 0)
         {
+            FindObjectOfType<SoundManager>().Play("PlayerDeath");
             dying = true;
             Destroy(UIHealthBar);
             GameObject.Find("RTSController").GetComponent<RTSController>().NotifyDeath(gameObject.name);

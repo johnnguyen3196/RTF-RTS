@@ -42,6 +42,8 @@ public class PlayerUnitGun : MonoBehaviour
                 PlayerBullet bullet = go.GetComponent<PlayerBullet>();
                 bullet.targetVector = gunTargetVector;
                 fireTime = Time.time + fireRate;
+
+                FindObjectOfType<SoundManager>().Play("PlayerGun");
             }
         }
         else

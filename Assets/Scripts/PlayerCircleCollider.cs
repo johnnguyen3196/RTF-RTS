@@ -14,19 +14,15 @@ public class PlayerCircleCollider : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(target != null)
+        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBuilding")
+        {
+            parent.enemiesInRange.Add(collision.gameObject);
+        }
+        if (target != null)
         {
             if (collision.gameObject.name == target.name)
             {
-                //transform.parent.GetComponent<PlayerUnit>().EnableAttack(true);
                 parent.inRangeOfTarget = true;
-            }
-        } else
-        {
-            if(collision.gameObject.tag == "Enemy")
-            {
-                parent.AttackMove();
-                //transform.parent.GetComponent<PlayerUnit>().EnableAttack(true);
             }
         }
     }
@@ -37,7 +33,12 @@ public class PlayerCircleCollider : MonoBehaviour
         {
             parent.DeAggro();
             parent.inRangeOfTarget = false;
-            //parent.AttackInRange();
+
+            int index = parent.enemiesInRange.FindIndex(enemy => enemy.name == collision.gameObject.name);
+            if(index != -1)
+            {
+                parent.enemiesInRange.RemoveAt(index);
+            }
         }
     }
 

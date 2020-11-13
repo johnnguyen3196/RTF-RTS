@@ -46,9 +46,16 @@ public class RTSController : MonoBehaviour
 
     private UIResource UIResource;
 
+    public GameObject MenuObject;
+
+    private bool gameOver;
+    private float gameOverTimer = 0;
+
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1;
+
         selectedPlayerObjects = new List<GameObject>();
         //selectedPlayerObjects.Add(new GameObject());
 
@@ -67,6 +74,10 @@ public class RTSController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (gameOver && gameOverTimer < Time.time) {
+            MenuObject.GetComponent<Menu>().DisplayGameOverMenu();
+        }
+
         checkNumbers();
 
         //Left Mouse Down
@@ -161,6 +172,11 @@ public class RTSController : MonoBehaviour
             {
                 SetRallyCommand();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            MenuObject.GetComponent<Menu>().Pause();
         }
     }
     
@@ -280,7 +296,7 @@ public class RTSController : MonoBehaviour
             playerUnit.GetComponent<PlayerUnit>().SetSelected(select);
         }
         if(select)
-            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects);
     }
 
     void SelectPlayerBuilding(bool select)
@@ -297,7 +313,15 @@ public class RTSController : MonoBehaviour
             ControlGroups[numberPressed].Clear();
             ControlGroups[numberPressed].AddRange(selectedPlayerObjects);
 
-            ControlGroupPanelObject.GetComponent<UIControlGroupPanel>().CreateControlGroup(numberPressed);
+            bool unit;
+            if(selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            {
+                unit = true;
+            } else
+            {
+                unit = false;
+            }
+            ControlGroupPanelObject.GetComponent<UIControlGroupPanel>().CreateControlGroup(numberPressed, unit);
         }
     }
 
@@ -305,7 +329,14 @@ public class RTSController : MonoBehaviour
     {
         if(ControlGroups[numberPressed].Count != 0)
         {
-            SelectPlayerUnits(false);
+            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            {
+                SelectPlayerUnits(false);
+            }
+            if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
+            {
+                SelectPlayerBuilding(false);
+            }
             selectedPlayerObjects.Clear();
             selectedPlayerObjects.AddRange(ControlGroups[numberPressed]);
             if (selectedPlayerObjects.Count > 0)
@@ -313,6 +344,11 @@ public class RTSController : MonoBehaviour
                 if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
                 {
                     SelectPlayerUnits(true);
+                    UIActionPanel.GetComponent<UIActionPanelController>().EnablePlayerUnitPanel();
+                } else
+                {
+                    SelectPlayerBuilding(true);
+                    UIActionPanel.GetComponent<UIActionPanelController>().EnablePlayerBarracksPanel();
                 }
             }
             ControlGroupPanelObject.GetComponent<UIControlGroupPanel>().SelectGroup(numberPressed);
@@ -342,7 +378,23 @@ public class RTSController : MonoBehaviour
         if(index != -1)
         {
             selectedPlayerObjects.RemoveAt(index);
-            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects.Count);
+            UIUnitPanel.GetComponent<UnitPanel>().SelectPlayerUnits(selectedPlayerObjects);
         }
+    }
+
+    public void Win()
+    {
+        gameOver = true;
+        gameOverTimer = Time.time + 1;
+
+        MenuObject.GetComponent<Menu>().SetGameOverText("You Win!");
+    }
+
+    public void Lose()
+    {
+        gameOver = true;
+        gameOverTimer = Time.time + 1;
+
+        MenuObject.GetComponent<Menu>().SetGameOverText("You Lose!");
     }
 }

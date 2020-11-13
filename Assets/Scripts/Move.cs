@@ -18,7 +18,7 @@ public class Move : Command
                 }
                 moveObjects.Clear();
 
-                float distance = .75f;
+                float distance = 1.25f;
                 int count = gameObjects.Count;
                 for (int i = 0; i < count; i++)
                 {

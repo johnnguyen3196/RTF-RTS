@@ -9,13 +9,16 @@ public class UIControlGroupPanel : MonoBehaviour
     public GameObject[] ButtonObjects;
     public int currentToggle = -1;
 
+    public Sprite unitImage;
+    public Sprite buildingImage;
+
     // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    public void CreateControlGroup(int number)
+    public void CreateControlGroup(int number, bool unit)
     {
         DisableCurrentGroup();
         currentToggle = number;
@@ -24,6 +27,13 @@ public class UIControlGroupPanel : MonoBehaviour
         go.SetActive(true);
 
         Image image = go.transform.GetChild(3).GetComponent<Image>();
+        if (unit)
+        {
+            image.sprite = unitImage;
+        } else
+        {
+            image.sprite = buildingImage;
+        }
         Color color = image.color;
         color.a = 1f;
         image.color = color;

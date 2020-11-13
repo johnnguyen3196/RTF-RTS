@@ -8,6 +8,8 @@ public class PlayerBullet : MonoBehaviour
     public float speed;
     public int damage;
     private Rigidbody2D rb;
+    //Allow bullet to hit only ONE object
+    private bool hit = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,24 +21,30 @@ public class PlayerBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Terrain")
+        if (!hit)
         {
-            Destroy(gameObject);
-        }
+            if (collision.gameObject.tag == "Terrain")
+            {
+                hit = true;
+                Destroy(gameObject);
+            }
 
-        if (collision.gameObject.tag == "Enemy")
-        {
-            EnemyUnit enemy = collision.gameObject.GetComponent<EnemyUnit>();
-            //bool direction = transform.position.x < collision.transform.position.x ? true : false;
-            enemy.TakeDamage(damage);
-            Destroy(gameObject);
-        }
+            if (collision.gameObject.tag == "Enemy")
+            {
+                hit = true;
+                EnemyUnit enemy = collision.gameObject.GetComponent<EnemyUnit>();
+                //bool direction = transform.position.x < collision.transform.position.x ? true : false;
+                enemy.TakeDamage(damage);
+                Destroy(gameObject);
+            }
 
-        if(collision.gameObject.tag == "EnemyBuilding")
-        {
-            EnemyBarracks enemy = collision.gameObject.GetComponent<EnemyBarracks>();
-            enemy.TakeDamage(damage);
-            Destroy(gameObject);
+            if (collision.gameObject.tag == "EnemyBuilding")
+            {
+                hit = true;
+                EnemyBarracks enemy = collision.gameObject.GetComponent<EnemyBarracks>();
+                enemy.TakeDamage(damage);
+                Destroy(gameObject);
+            }
         }
     }
 }
