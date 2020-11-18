@@ -24,6 +24,8 @@ public class EnemyBarracks : MonoBehaviour
     private float timer;
 
     public GameObject ExplosionObject;
+
+    public bool disableBarracks;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,35 +52,38 @@ public class EnemyBarracks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (producing)
+        if (!disableBarracks)
         {
-            productionTimer += Time.deltaTime;
-            if (productionTimer >= 5)
+            if (producing)
             {
-                spawnOneUnit();
-                unitProduction--;
-                if (unitProduction == 0)
+                productionTimer += Time.deltaTime;
+                if (productionTimer >= 5)
                 {
-                    producing = false;
+                    spawnOneUnit();
+                    unitProduction--;
+                    if (unitProduction == 0)
+                    {
+                        producing = false;
+                    }
+                    productionTimer = 0;
                 }
-                productionTimer = 0;
             }
-        }
-        else
-        {
-            if (unitProduction > 0)
+            else
             {
-                producing = true;
-                productionTimer = 0;
+                if (unitProduction > 0)
+                {
+                    producing = true;
+                    productionTimer = 0;
+                }
             }
-        }
-        productionBar.SetTimer(productionTimer);
+            productionBar.SetTimer(productionTimer);
 
-        //AI produces a unit every 20 - 35 seconds
-        if(timer < Time.time)
-        {
-            Produce();
-            timer += Random.Range(20, 36);
+            //AI produces a unit every 10 - 25 seconds
+            if (timer < Time.time)
+            {
+                Produce();
+                timer += Random.Range(10, 26);
+            }
         }
     }
 

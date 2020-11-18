@@ -329,14 +329,18 @@ public class RTSController : MonoBehaviour
     {
         if(ControlGroups[numberPressed].Count != 0)
         {
-            if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+            if(selectedPlayerObjects.Count != 0)
             {
-                SelectPlayerUnits(false);
+                if (selectedPlayerObjects[0].GetComponent<PlayerUnit>() != null)
+                {
+                    SelectPlayerUnits(false);
+                }
+                if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
+                {
+                    SelectPlayerBuilding(false);
+                }
             }
-            if (selectedPlayerObjects[0].GetComponent<PlayerBarracks>() != null)
-            {
-                SelectPlayerBuilding(false);
-            }
+            
             selectedPlayerObjects.Clear();
             selectedPlayerObjects.AddRange(ControlGroups[numberPressed]);
             if (selectedPlayerObjects.Count > 0)
